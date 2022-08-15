@@ -196,7 +196,7 @@ function answerKey(element) {
             blankQuiz();
             break;
 
-        case "4. alert('Hello World')":
+        case "4. alert('Hello World');":
             option = "Correct!";
             isItRight();
             blankQuiz();
