@@ -7,11 +7,14 @@ var clockStart = true;
 var clock = 0;
 var question = -1;
 var thisQuestion = [];
+var htmlBody = document.querySelector('body');
+var option = "";
 
 function blankQuiz() {
     question++;
     topDiv.innerHTML = "";
     bottomDiv.innerHTML = "";
+    pickQuestion();
 };
 
 function startQuiz() {
@@ -27,6 +30,7 @@ function countdown() {
             timeLeft.innerHTML = 'Time Remaining: ' + timer;
             timer--;
             clock = timer;
+            pickQuestion();
         }
         else if(timer > 0 & clockStart) {
             timeLeft.innerHTML = 'Time Remaining: ' + timer;
@@ -117,4 +121,87 @@ function pickQuestion() {
         thirdAnswer: "3. curly brackets",
         fourthAnswer: "4. quotes"
     };
+
+    thisQuestion = [firstQuestion, secondQuestion, thirdQuestion, fourthQuestion, fifthQuestion, sixthQuestion];
+    thisQuestion = thisQuestion[question];
+
+    if(thisQuestion) {
+        return makeQuestion(thisQuestion);
+    } else {
+        clockStart = false;
+        return countdown();
+    }
+}
+
+htmlBody.addEventListener('click', function() {
+    var element = event.target
+    var startButton = document.querySelector('.start-button');
+
+    if(element === startButton) {
+        startQuiz();
+        element = '';
+    }
+    else if(element.className === 'submit') {
+        var nameInitials = box.querySelector("input[name = 'initials']").value;
+        return saveInitials(nameInitials);
+    }
+    else if(element.className === 'question-button') {
+        answerKey(element);
+    }
+    else if(element.className === 'high-score-span') {
+        nameInitials = "empty";
+        saveInitials(element);
+    } else {
+        return;
+    }
+})
+
+function isItRight() {
+    var extraDiv = document.getElementById('extraDivId');
+    if(extraDiv) {
+        extraDiv.remove();
+    }
+
+    var div = document.createElement('div')
+    div.className = 'extraDiv';
+    div.setAttribute('id', 'extraDivId');
+    box.appendChild(div);
+
+    var divTwo = document.createElement('div');
+    divTwo.className = 'extraDivTwo';
+    div.appendChild(divTwo);
+
+    var divP = document.createElement('p');
+    divP.className = 'quiz-p';
+    divP.innerHTML = option;
+    divTwo.appendChild(divP);
+}
+
+function answerKey(element) {
+    
+    switch(element.innerHTML) {
+        case "3. Alerts" :
+            option = "Correct!";
+            isItRight();
+            blankQuiz();
+            break;
+
+        case "4. All of the above":
+            option = "Correct!";
+            isItRight();
+            blankQuiz();
+            break;
+
+        case "4. alert('Hello World')":
+            option = "Correct!";
+            isItRight();
+            blankQuiz();
+            break;
+
+        case "2. console.log" :
+            option = "Correct!";
+            isItRight();
+            blankQuiz();
+            break;
+    }
 }
