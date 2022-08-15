@@ -9,6 +9,8 @@ var question = -1;
 var thisQuestion = [];
 var htmlBody = document.querySelector('body');
 var option = "";
+var score = 0;
+var x = 0;
 
 function blankQuiz() {
     question++;
@@ -34,7 +36,7 @@ function countdown() {
         }
         else if(timer > 0 & clockStart) {
             timeLeft.innerHTML = 'Time Remaining: ' + timer;
-            timer;
+            timer--;
             clock = timer;
         } else {
             timeLeft.innerHTML = 'Time Remaining: ' + timer;
@@ -42,6 +44,8 @@ function countdown() {
             clock = timer;
             clockStart = false;
             bottomDiv.innerHTML = '';
+
+            return playerScores();
         }
     }, 1000);
 }
@@ -110,7 +114,7 @@ function pickQuestion() {
         paragraph: "How do you write an 'if' statement in JavaScript? ",
         firstAnswer: "1. if i==5 then",
         secondAnswer: "2. if i=5 then",
-        thirdAnswer: "3. if(i==5) {}",
+        thirdAnswer: "3. if(i == 5) {}",
         fourthAnswer: "4. if i==5 {}{}"
     };
 
@@ -203,5 +207,108 @@ function answerKey(element) {
             isItRight();
             blankQuiz();
             break;
+
+        case "3. if(i == 5) {}" :
+            option = "Correct!";
+            isItRight();
+            blankQuiz();
+            break;
+
+        case "3. curly brackets" :
+            option = "Correct!";
+            isItRight();
+            blankQuiz();
+            break;
+            default:
+                option = "Wrong!";
+                isItRight();
+                timer -= 10;
+                blankQuiz();
+                break;
+    }
+}
+
+function playerScores() {
+    topDiv.innerHTML = "";
+
+    clockStart = false;
+    var h1Create = document.createElement('h1');
+    h1Create.textContent = 'Finished!'
+    topDiv.appendChild(h1Create);
+
+    var pCreate = document.createElement('p');
+    pCreate.textContent = 'Your final score is ' + score;
+
+    var formCreate = document.createElement('form');
+    formCreate.setAttribute('method', 'post');
+    formCreate.setAttribute('action', 'submit');
+    formCreate.innerHTML = "<div class='divThree'><label= for='initials'>Enter initials: </label><div class='divFour'><input type='text' name='initials' placeholder='Initials go here'</input>"
+
+    topDiv.appendChild(formCreate);
+}
+
+function saveInitials(nameInitials) {
+    var scoreArray = ["1) ", "2) ", "3) ", "4) ", "5) "];
+    var current = localStorage.getItem(scoreArray[0]);
+
+    var yourScore = {
+        name: nameInitials,
+        playerScore: score
+    };
+    timeLeft.innerHTML = 'Time Remaining: ' + score;
+
+    if(current && yourScore.name) {
+        while ( x <scoreArray.length) {
+
+            var playerVar = JSON.parse(current);
+
+            if(playerVar) {
+                var playerScore = playerVar.playerScore;
+
+                if(playerScore < score) {
+
+                    localStorage.setItem(scoreArray[x], JSON.stringify(yourScore));
+                    return highScores(scoreArray);
+                } else {
+                    x ++; return saveInitials(nameInitials);
+                }
+            } else {
+                localStorage.setItem(scoreArray[x], JSON.stringify(yourScore));
+                return highScores(scoreArray);
+            }
+        }
+    } else if (yourScore.name) {
+        localStorage.setItem(scoreArray[x], JSON.stringify(yourScore));
+        return highScores(scoreArray);
+    } else {
+        divTwo.innerHTML = '';
+        return highScores(scoreArray);
+    }
+}
+
+function highScores(scoreArray) {
+    divOne.innerHTML = "<h1 class='highscore'>High Scores:</h1>";
+    var oL = document.createElement('ol');
+    divOne.appendChild(oL);
+    var divFour = document.getElementsByClassName('divFour');
+    
+    if(divFour.length > 0) {
+        divFour = divFour[0];
+        divFour.remove();
+    }
+
+    for (var i = 0; i < scoreArray.length; i++) {
+        var current = localStorage.getItem(scoreArray[i]);
+        var playerObj = JSON.parse(current);
+
+        if(playerObj) {
+            var playerName = playerObj.name;
+            var playerScore = playerObj.playerScore;
+            var lI = document.createElement('li');
+            lI.textContent = playerName + " - " + playerScore;
+            oL.appendChild(lI)
+        } else {
+            return;
+        }
     }
 }
