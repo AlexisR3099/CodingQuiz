@@ -46,3 +46,25 @@ button:hover {
     border: 2px violet;
     background-color: violet;
 }
+
+.question-button {
+    width: 250px;
+}
+
+.start-button {
+    width: 200px;
+    text-align: center;
+}
+
+.time-remaining {
+    width: 100px;
+    margin-left: -50px;
+    margin-top: 15px;
+    text-align: end;
+    font-size: 22px;
+}
+
+.question-p {
+    font-size: 50px;
+    font-weight: bolder;
+}
